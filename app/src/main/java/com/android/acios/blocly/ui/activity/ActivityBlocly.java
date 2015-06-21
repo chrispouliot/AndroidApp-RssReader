@@ -4,7 +4,10 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.acios.blocly.BloclyApplication;
 import com.android.acios.blocly.R;
 
 public class ActivityBlocly extends Activity {
@@ -13,6 +16,10 @@ public class ActivityBlocly extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_blocly);
+        String rssFeedTitle = BloclyApplication.getSharedDataSource().getFeeds().get(0).getTitle();
+        TextView t = (TextView)findViewById(R.id.textView);
+        t.setText(rssFeedTitle);
+        Toast.makeText(this, rssFeedTitle, Toast.LENGTH_LONG).show();
     }
 
     @Override
