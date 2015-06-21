@@ -4,13 +4,26 @@
         <!-- Window Background -->
         <item name="android:windowBackground">@color/windowBackground</item>
     </style>
-    <style name="sillyTextView">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:text">26sp</item>
-        <item name="android:layout_gravity">center</item>
-        <item name="android:gravity">center</item>
-        <item name="android:layout_alignParentTop">true</item>
-        <item name="android:layout_centerHorizontal">true</item>
+    <style name="Headline">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">24sp</item>
+        // #1
+        <item name="android:ellipsize">end</item>
+        // #2
+        <item name="robotoFont">Regular</item>
+    </style>
+
+    <style name="Caption">
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:lines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="robotoFont">Regular</item>
+    </style>
+
+    <style name="Body1">
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:textSize">14sp</item>
+        <item name="robotoFont">Regular</item>
     </style>
 </resources>
