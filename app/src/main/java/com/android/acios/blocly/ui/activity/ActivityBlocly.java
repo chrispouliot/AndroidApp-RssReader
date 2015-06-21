@@ -2,24 +2,30 @@ package com.android.acios.blocly.ui.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.acios.blocly.BloclyApplication;
 import com.android.acios.blocly.R;
+import com.android.acios.blocly.ui.adapter.ItemAdapter;
 
 public class ActivityBlocly extends Activity {
+
+    private ItemAdapter itemAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_blocly);
-        String rssFeedTitle = BloclyApplication.getSharedDataSource().getFeeds().get(0).getTitle();
-        TextView t = (TextView)findViewById(R.id.textView);
-        t.setText(rssFeedTitle);
-        Toast.makeText(this, rssFeedTitle, Toast.LENGTH_LONG).show();
+
+        itemAdapter = new ItemAdapter();
+
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rv_activity_blocly);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(itemAdapter);
     }
 
     @Override
