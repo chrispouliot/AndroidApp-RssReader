@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,7 +41,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
         return BloclyApplication.getSharedDataSource().getItems().size();
     }
 
-    class ItemAdapterViewHolder extends RecyclerView.ViewHolder implements ImageLoadingListener, View.OnClickListener {
+    class ItemAdapterViewHolder extends RecyclerView.ViewHolder implements ImageLoadingListener, View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
         TextView title;
         TextView feed;
@@ -47,6 +49,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
         View headerWrapper;
         ImageView headerImage;
         RssItem rssItem;
+        CheckBox archiveCheckBox;
+        CheckBox favoriteCheckBox;
 
         public ItemAdapterViewHolder(View itemView) {
             super(itemView);
@@ -56,7 +60,13 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
 
             headerWrapper = itemView.findViewById(R.id.fl_rss_item_image_header);
             headerImage = (ImageView) headerWrapper.findViewById(R.id.iv_rss_item_image);
+
+            archiveCheckBox = (CheckBox) itemView.findViewById(R.id.cb_rss_item_check_mark);
+            favoriteCheckBox = (CheckBox) itemView.findViewById(R.id.cb_rss_item_favorite_star);
+
             itemView.setOnClickListener(this);
+            archiveCheckBox.setOnCheckedChangeListener(this);
+            favoriteCheckBox.setOnCheckedChangeListener(this);
         }
 
         void update(RssFeed rssFeed, RssItem rssItem) {
@@ -74,6 +84,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
             }
         }
 
+        //imageLoadingListener interface
         @Override
         public void onLoadingStarted(String imageUri, View view) {}
 
@@ -97,9 +108,17 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
             ImageLoader.getInstance().loadImage(imageUri, this);
         }
 
+        //onClickListener interface
         @Override
         public void onClick(View view) {
             Toast.makeText(view.getContext(), rssItem.getTitle(), Toast.LENGTH_SHORT).show();
+        }
+
+
+        //onCheckedChangeListener interface
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            Log.v(TAG, buttonView.getResources().getResourceEntryName(buttonView.getId()) + " changed to: " + isChecked);
         }
     }
 
