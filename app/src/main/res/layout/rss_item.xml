@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="8dp"
@@ -69,7 +70,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginRight="8dp"
             android:layout_toLeftOf="@id/cb_rss_item_check_mark"
-            android:text="New York Times" />
+            android:text="@string/placeholder_headline" />
 
         <com.android.acios.blocly.ui.widget.RobotoTextView
             android:id="@+id/tv_rss_item_content"
@@ -79,8 +80,47 @@
             android:layout_below="@+id/tv_rss_item_feed_title"
             android:layout_marginTop="8dp"
             android:layout_marginRight="8dp"
+            android:lines="3"
+            android:ellipsize="end"
             android:layout_toLeftOf="@+id/cb_rss_item_check_mark"
-            android:text="A giant squid appeared abruptly today in lower Manhattan. The squid appeared peaceful at first but violence quickly escalated after a tourist attempted to have their photo taken with the \'big city octopus\'." />
+            android:text="@string/placeholder_content" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ll_rss_item_expanded_content_wrapper"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="16dp"
+            android:layout_below="@+id/tv_rss_item_feed_title"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@+id/cb_rss_item_check_mark"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <com.android.acios.blocly.ui.widget.RobotoTextView
+                style="@style/Body1"
+                android:id="@+id/tv_rss_item_content_full"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <com.andexert.library.RippleView
+                android:id="@+id/ripple"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:rv_rippleDuration="130"
+                app:rv_framerate="60">
+
+                <Button
+                    android:layout_marginTop="-4dp"
+                    android:layout_marginBottom="-4dp"
+                    android:id="@+id/tv_rss_item_visit_site"
+                    android:background="@color/primary"
+                    android:text="visit site"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </com.andexert.library.RippleView>
+        </LinearLayout>
 
 
     </RelativeLayout>

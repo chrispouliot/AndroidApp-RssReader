@@ -1,5 +1,7 @@
 package com.android.acios.blocly.api;
 
+import com.android.acios.blocly.BloclyApplication;
+import com.android.acios.blocly.R;
 import com.android.acios.blocly.api.model.RssFeed;
 import com.android.acios.blocly.api.model.RssItem;
 
@@ -31,8 +33,8 @@ public class DataSource {
                 "http://favoritefeed.net", "http://feeds.feedburner.com/favorite_feed?format=xml"));
         for (int i = 0; i < 10; i++) {
             items.add(new RssItem(String.valueOf(i),
-                    "An incredible news story #" + i,
-                    "You won't believe how exciting this news story is, get ready to be blown away by its amazingness.",
+                    BloclyApplication.getSharedInstance().getString(R.string.placeholder_headline),
+                    BloclyApplication.getSharedInstance().getString(R.string.placeholder_content),
                     "http://favoritefeed.net?story_id=an-incredible-news-story",
                     "http://rs1img.memecdn.com/silly-dog_o_511213.jpg",
                     0, System.currentTimeMillis(), false, false, false));
