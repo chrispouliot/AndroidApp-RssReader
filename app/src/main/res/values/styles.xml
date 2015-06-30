@@ -3,6 +3,8 @@
     <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
         <!-- Window Background -->
         <item name="android:windowBackground">@color/windowBackground</item>
+        <!-- DrawerArrowStyle -->
+        <item name="drawerArrowStyle">@style/DrawerArrow</item>
     </style>
     <style name="Headline">
         <item name="android:textColor">@color/text_primary</item>
@@ -11,6 +13,10 @@
         <item name="android:ellipsize">end</item>
         // #2
         <item name="robotoFont">Regular</item>
+    </style>
+
+    <style name="DrawerArrow" parent="Base.Widget.AppCompat.DrawerArrowToggle">
+        <item name="color">@color/actionBarItems</item>
     </style>
 
     <style name="Caption">
