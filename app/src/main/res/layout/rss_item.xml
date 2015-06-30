@@ -101,25 +101,26 @@
                 style="@style/Body1"
                 android:id="@+id/tv_rss_item_content_full"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:paddingBottom="8dp"/>
 
-            <com.andexert.library.RippleView
+            <com.balysv.materialripple.MaterialRippleLayout
+                app:mrl_rippleOverlay="true"
+                app:mrl_rippleColor="#ffffff"
                 android:id="@+id/ripple"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:rv_rippleDuration="130"
-                app:rv_framerate="60">
+                android:layout_height="wrap_content">
 
                 <Button
-                    android:layout_marginTop="-4dp"
-                    android:layout_marginBottom="-4dp"
+                    android:layout_marginTop="-10dp"
+                    android:layout_marginBottom="-10dp"
                     android:id="@+id/tv_rss_item_visit_site"
                     android:background="@color/primary"
                     android:text="visit site"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
-            </com.andexert.library.RippleView>
+            </com.balysv.materialripple.MaterialRippleLayout>
         </LinearLayout>
 
 
