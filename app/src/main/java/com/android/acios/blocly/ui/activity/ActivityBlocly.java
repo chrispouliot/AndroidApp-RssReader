@@ -16,12 +16,15 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import com.android.acios.blocly.R;
+import com.android.acios.blocly.api.model.RssFeed;
 import com.android.acios.blocly.ui.adapter.ItemAdapter;
 import com.android.acios.blocly.ui.adapter.NavigationDrawerAdapter;
 
-public class ActivityBlocly extends AppCompatActivity {
+public class ActivityBlocly extends AppCompatActivity implements NavigationDrawerAdapter.NavigationDrawerAdapterDelegate, ItemAdapter.ItemAdapterDelegate{
 
     private ItemAdapter itemAdapter;
     private ActionBarDrawerToggle drawerToggle;
@@ -37,6 +40,7 @@ public class ActivityBlocly extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         itemAdapter = new ItemAdapter();
+        itemAdapter.setDelegate(this);
 
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rv_activity_blocly);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -76,6 +80,7 @@ public class ActivityBlocly extends AppCompatActivity {
         drawerLayout.setDrawerListener(drawerToggle);
 
         navigationDrawerAdapter = new NavigationDrawerAdapter();
+        navigationDrawerAdapter.setDelegate(this);
         RecyclerView navigationRecyclerView = (RecyclerView) findViewById(R.id.rv_nav_activity_blocly);
         navigationRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         navigationRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -115,5 +120,49 @@ public class ActivityBlocly extends AppCompatActivity {
         return true;
     }
 
+    /*
+     * NavigationDrawerAdapterDelegate
+     */
+
+    @Override
+    public void didSelectNavigationOption(NavigationDrawerAdapter adapter, NavigationDrawerAdapter.NavigationOption navigationOption) {
+        drawerLayout.closeDrawers();
+        Toast.makeText(this, "Show the " + navigationOption.name(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void didSelectFeed(NavigationDrawerAdapter adapter, RssFeed rssFeed) {
+        drawerLayout.closeDrawers();
+        Toast.makeText(this, "Show RSS items from " + rssFeed.getTitle(), Toast.LENGTH_SHORT).show();
+    }
+
+    /*
+     * ItemAdapterDelegate
+     */
+
+    @Override
+    public void didExpandItem(View itemView) {
+        Toast.makeText(this, "VIEW EXPANDED", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void didContractItem(View itemView) {
+        Toast.makeText(this, "VIEW CONTRACTED", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void didClickVisitSite(String site) {
+        Toast.makeText(this, "Visit " + site, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void didFavorite(View view, boolean isChecked) {
+        Toast.makeText(this, isChecked ? "Favorited" : "Unfavorited", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void didArchive(View view, boolean isChecked) {
+        Toast.makeText(this, isChecked ? "Archived" : "Unarchived", Toast.LENGTH_SHORT).show();
+    }
 
 }
