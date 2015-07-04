@@ -1,7 +1,9 @@
 package com.android.acios.blocly.ui.activity;
 
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -17,12 +19,14 @@ import android.view.MenuItem;
 
 import com.android.acios.blocly.R;
 import com.android.acios.blocly.ui.adapter.ItemAdapter;
+import com.android.acios.blocly.ui.adapter.NavigationDrawerAdapter;
 
 public class ActivityBlocly extends AppCompatActivity {
 
     private ItemAdapter itemAdapter;
     private ActionBarDrawerToggle drawerToggle;
     private DrawerLayout drawerLayout;
+    private NavigationDrawerAdapter navigationDrawerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,8 +65,27 @@ public class ActivityBlocly extends AppCompatActivity {
         drawerLayout = (DrawerLayout) findViewById(R.id.dl_activity_blocly);
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, 0, 0);
         // BAM I FIGURED OUT HOW TO MAKE THE DRAWER BE OPEN ON FIRST OPEN OF APP WOOT
-        drawerLayout.openDrawer(Gravity.LEFT);
+        if (!hasDrawerDemod()) {
+            drawerLayout.openDrawer(Gravity.LEFT);
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("hasDemod", true);
+            editor.commit();
+        }
+
         drawerLayout.setDrawerListener(drawerToggle);
+
+        navigationDrawerAdapter = new NavigationDrawerAdapter();
+        RecyclerView navigationRecyclerView = (RecyclerView) findViewById(R.id.rv_nav_activity_blocly);
+        navigationRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        navigationRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        navigationRecyclerView.setAdapter(navigationDrawerAdapter);
+    }
+
+    public boolean hasDrawerDemod() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean hasDrawerDemod = prefs.getBoolean("hasDemod", false);
+        return hasDrawerDemod;
     }
 
     @Override
