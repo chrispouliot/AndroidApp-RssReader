@@ -12,7 +12,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.acios.blocly.R;
 import com.android.acios.blocly.api.model.RssFeed;
@@ -29,6 +28,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
         public void onItemClicked(ItemAdapter itemAdapter, RssItem rssItem);
         public void didFavorite(View view, boolean isChecked, RssItem rssItem);
         public void didArchive(View view, boolean isChecked, RssItem rssItem);
+        public void onVisitClicked(ItemAdapter itemAdapter, RssItem rssItem);
     }
 
     public static interface DataSource {
@@ -187,7 +187,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
                     getDelegate().onItemClicked(ItemAdapter.this, rssItem);
                 }
             } else {
-                Toast.makeText(view.getContext(), "Visit " + rssItem.getUrl(), Toast.LENGTH_SHORT).show();
+               if (getDelegate() != null) {
+                   getDelegate().onVisitClicked(ItemAdapter.this, rssItem);
+               }
             }
         }
 
