@@ -12,10 +12,9 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.android.acios.blocly.BloclyApplication;
 import com.android.acios.blocly.R;
-import com.android.acios.blocly.api.DataSource;
 import com.android.acios.blocly.api.model.RssFeed;
 import com.android.acios.blocly.api.model.RssItem;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -25,17 +24,23 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import java.lang.ref.WeakReference;
 
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterViewHolder> {
-    private static String TAG = ItemAdapter.class.getSimpleName();
 
     public static interface ItemAdapterDelegate {
-        public void didExpandItem(View itemView);
-        public void didContractItem(View itemView);
-        public void didClickVisitSite(String site);
-        public void didFavorite(View view, boolean isChecked);
-        public void didArchive(View view, boolean isChecked);
+        public void onItemClicked(ItemAdapter itemAdapter, RssItem rssItem);
+        public void didFavorite(View view, boolean isChecked, RssItem rssItem);
+        public void didArchive(View view, boolean isChecked, RssItem rssItem);
     }
 
-    WeakReference<ItemAdapterDelegate> delegate;
+    public static interface DataSource {
+        public RssItem getRssItem(ItemAdapter itemAdapter, int position);
+        public RssFeed getRssFeed(ItemAdapter itemAdapter, int position);
+        public int getItemCount(ItemAdapter itemAdapter);
+    }
+
+    private static String TAG = ItemAdapter.class.getSimpleName();
+    private WeakReference<ItemAdapterDelegate> delegate;
+    private WeakReference<DataSource> dataSource;
+    private RssItem expandedItem = null;
 
     @Override
     public ItemAdapterViewHolder onCreateViewHolder(ViewGroup viewGroup, int index) {
@@ -45,14 +50,34 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
 
     @Override
     public void onBindViewHolder(ItemAdapterViewHolder itemAdapterViewHolder, int index) {
-        DataSource sharedDataSource = BloclyApplication.getSharedDataSource();
-        itemAdapterViewHolder.update(sharedDataSource.getFeeds().get(0), sharedDataSource.getItems().get(index));
+        if (getDataSource() == null) {
+            return;
+        }
+
+        RssItem rssItem = getDataSource().getRssItem(this, index);
+        RssFeed rssFeed = getDataSource().getRssFeed(this, index);
+        itemAdapterViewHolder.update(rssFeed, rssItem);
     }
 
     @Override
     public int getItemCount() {
-        return BloclyApplication.getSharedDataSource().getItems().size();
+        if (getDataSource() == null) {
+            return 0;
+        }
+        return getDataSource().getItemCount(this);
     }
+
+    public DataSource getDataSource() {
+        if (dataSource == null) {
+            return null;
+        }
+        return dataSource.get();
+    }
+
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = new WeakReference<DataSource>(dataSource);
+    }
+
 
     public ItemAdapterDelegate getDelegate() {
         if (delegate == null) {
@@ -64,6 +89,14 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
 
     public void setDelegate(ItemAdapterDelegate delegate) {
         this.delegate = new WeakReference<ItemAdapterDelegate>(delegate);
+    }
+
+    public RssItem getExpandedItem() {
+        return expandedItem;
+    }
+
+    public void setExpandedItem(RssItem expandedItem) {
+        this.expandedItem = expandedItem;
     }
 
     class ItemAdapterViewHolder extends RecyclerView.ViewHolder implements ImageLoadingListener, View.OnClickListener, CompoundButton.OnCheckedChangeListener {
@@ -116,6 +149,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
             } else {
                 headerWrapper.setVisibility(View.GONE);
             }
+            animateContent(getExpandedItem() == rssItem);
         }
 
         //imageLoadingListener interface
@@ -149,19 +183,11 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
         @Override
         public void onClick(View view) {
             if (view == itemView) {
-                animateContent(!contentExpanded);
-                if (getDelegate() == null) {
-                    return;
-                } else {
-                    if (contentExpanded) {
-                        getDelegate().didExpandItem(view);
-                    } else {
-                        getDelegate().didContractItem(view);
-                    }
+                if (getDelegate() != null) {
+                    getDelegate().onItemClicked(ItemAdapter.this, rssItem);
                 }
-            } else if (view.getId() == R.id.tv_rss_item_visit_site) {
-                Log.v("onClick", "clicked visit site");
-                getDelegate().didClickVisitSite(this.rssItem.getUrl());
+            } else {
+                Toast.makeText(view.getContext(), "Visit " + rssItem.getUrl(), Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -173,9 +199,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             if (buttonView.getId() == R.id.cb_rss_item_check_mark) {
-                getDelegate().didArchive(buttonView, isChecked);
+                getDelegate().didArchive(buttonView, isChecked, rssItem);
             } else if (buttonView.getId() == R.id.cb_rss_item_favorite_star) {
-                getDelegate().didFavorite(buttonView, isChecked);
+                getDelegate().didFavorite(buttonView, isChecked, rssItem);
             }
         }
 
