@@ -24,17 +24,17 @@ import java.lang.ref.WeakReference;
 
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterViewHolder> {
 
-    public static interface ItemAdapterDelegate {
-        public void onItemClicked(ItemAdapter itemAdapter, RssItem rssItem);
-        public void didFavorite(View view, boolean isChecked, RssItem rssItem);
-        public void didArchive(View view, boolean isChecked, RssItem rssItem);
-        public void onVisitClicked(ItemAdapter itemAdapter, RssItem rssItem);
+    public interface ItemAdapterDelegate {
+         void onItemClicked(ItemAdapter itemAdapter, RssItem rssItem);
+         void didFavorite(View view, boolean isChecked, RssItem rssItem);
+         void didArchive(View view, boolean isChecked, RssItem rssItem);
+         void onVisitClicked(ItemAdapter itemAdapter, RssItem rssItem);
     }
 
-    public static interface DataSource {
-        public RssItem getRssItem(ItemAdapter itemAdapter, int position);
-        public RssFeed getRssFeed(ItemAdapter itemAdapter, int position);
-        public int getItemCount(ItemAdapter itemAdapter);
+    public interface DataSource {
+         RssItem getRssItem(ItemAdapter itemAdapter, int position);
+         RssFeed getRssFeed(ItemAdapter itemAdapter, int position);
+         int getItemCount(ItemAdapter itemAdapter);
     }
 
     private static String TAG = ItemAdapter.class.getSimpleName();
