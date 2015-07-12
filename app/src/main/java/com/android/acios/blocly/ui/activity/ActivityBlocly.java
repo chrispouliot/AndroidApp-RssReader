@@ -1,7 +1,10 @@
 package com.android.acios.blocly.ui.activity;
 
 import android.animation.ValueAnimator;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
@@ -26,6 +29,7 @@ import android.widget.Toast;
 
 import com.android.acios.blocly.BloclyApplication;
 import com.android.acios.blocly.R;
+import com.android.acios.blocly.api.DataSource;
 import com.android.acios.blocly.api.model.RssFeed;
 import com.android.acios.blocly.api.model.RssItem;
 import com.android.acios.blocly.ui.adapter.ItemAdapter;
@@ -42,6 +46,14 @@ public class ActivityBlocly extends AppCompatActivity implements NavigationDrawe
     private NavigationDrawerAdapter navigationDrawerAdapter;
     private Menu menu;
     private View overFlowButton;
+
+    private BroadcastReceiver dataSourceBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            itemAdapter.notifyDataSetChanged();
+            navigationDrawerAdapter.notifyDataSetChanged();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -171,6 +183,8 @@ public class ActivityBlocly extends AppCompatActivity implements NavigationDrawe
         navigationRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         navigationRecyclerView.setItemAnimator(new DefaultItemAnimator());
         navigationRecyclerView.setAdapter(navigationDrawerAdapter);
+
+        registerReceiver(dataSourceBroadcastReceiver, new IntentFilter(DataSource.ACTION_DOWNLOAD_COMPLETED));
     }
 
     public boolean hasDrawerDemod() {
@@ -235,6 +249,12 @@ public class ActivityBlocly extends AppCompatActivity implements NavigationDrawe
         this.menu = menu;
         animateShareItem(itemAdapter.getExpandedItem() != null);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(dataSourceBroadcastReceiver);
     }
 
     /*
