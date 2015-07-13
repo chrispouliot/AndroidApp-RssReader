@@ -90,6 +90,12 @@ public class RssItemTable extends Table{
         return getBoolean(cursor, COLUMN_FAVORITE);
     }
 
+    public static Cursor fetchItemsForFeed(SQLiteDatabase readonlyDatabase, long feedRowId) {
+        return readonlyDatabase.query(true, NAME, null, COLUMN_RSS_FEED + " = ?",
+                new String[]{String.valueOf(feedRowId)},
+                null, null, COLUMN_PUB_DATE + " DESC", null);
+    }
+
     public static boolean getArchived(Cursor cursor) {
         return getBoolean(cursor, COLUMN_ARCHIVED);
     }
