@@ -67,7 +67,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
     }
 
     public void setDelegate(NavigationDrawerAdapterDelegate delegate) {
-        this.delegate = new WeakReference<NavigationDrawerAdapterDelegate>(delegate);
+        this.delegate = new WeakReference<>(delegate);
     }
 
     public NavigationDrawerAdapterDataSource getDataSource() {
@@ -78,7 +78,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
     }
 
     public void setDataSource(NavigationDrawerAdapterDataSource dataSource) {
-        this.dataSource = new WeakReference<NavigationDrawerAdapterDataSource>(dataSource);
+        this.dataSource = new WeakReference<>(dataSource);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

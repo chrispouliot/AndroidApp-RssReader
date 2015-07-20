@@ -75,7 +75,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
     }
 
     public void setDataSource(DataSource dataSource) {
-        this.dataSource = new WeakReference<DataSource>(dataSource);
+        this.dataSource = new WeakReference<>(dataSource);
     }
 
 
@@ -88,7 +88,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
     }
 
     public void setDelegate(ItemAdapterDelegate delegate) {
-        this.delegate = new WeakReference<ItemAdapterDelegate>(delegate);
+        this.delegate = new WeakReference<>(delegate);
     }
 
     public RssItem getExpandedItem() {
