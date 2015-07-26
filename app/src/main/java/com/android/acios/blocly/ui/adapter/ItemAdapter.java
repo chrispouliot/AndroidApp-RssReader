@@ -2,11 +2,14 @@ package com.android.acios.blocly.ui.adapter;
 
 import android.animation.ValueAnimator;
 import android.graphics.Bitmap;
+import android.graphics.Outline;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewOutlineProvider;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -14,13 +17,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.acios.blocly.R;
+import com.android.acios.blocly.api.UIUtils;
 import com.android.acios.blocly.api.model.RssFeed;
 import com.android.acios.blocly.api.model.RssItem;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
+import org.w3c.dom.Text;
+
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterViewHolder> {
 
@@ -38,6 +46,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
     }
 
     private static String TAG = ItemAdapter.class.getSimpleName();
+    private Map<Long, Integer> rssFeedToColor = new HashMap<>();
     private WeakReference<ItemAdapterDelegate> delegate;
     private WeakReference<DataSource> dataSource;
     private RssItem expandedItem = null;
@@ -101,9 +110,11 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
 
     class ItemAdapterViewHolder extends RecyclerView.ViewHolder implements ImageLoadingListener, View.OnClickListener, CompoundButton.OnCheckedChangeListener {
         boolean contentExpanded;
+        boolean onTablet;
         TextView title;
-        TextView feed;
         TextView content;
+        //Phone only
+        TextView feed;
         View headerWrapper;
         ImageView headerImage;
         RssItem rssItem;
@@ -112,34 +123,60 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
         View expandedContentWrapper;
         TextView expandedContent;
         TextView visitSite;
+        //tablet only
+        TextView callout;
 
         public ItemAdapterViewHolder(View itemView) {
             super(itemView);
             title = (TextView) itemView.findViewById(R.id.tv_rss_item_title);
-            feed = (TextView) itemView.findViewById(R.id.tv_rss_item_feed_title);
             content = (TextView) itemView.findViewById(R.id.tv_rss_item_content);
 
-            headerWrapper = itemView.findViewById(R.id.fl_rss_item_image_header);
-            headerImage = (ImageView) headerWrapper.findViewById(R.id.iv_rss_item_image);
+            if (itemView.findViewById(R.id.tv_rss_item_feed_title) != null) {
+                feed = (TextView) itemView.findViewById(R.id.tv_rss_item_feed_title);
+                headerWrapper = itemView.findViewById(R.id.fl_rss_item_image_header);
+                headerImage = (ImageView) itemView.findViewById(R.id.iv_rss_item_image);
+                archiveCheckBox = (CheckBox) itemView.findViewById(R.id.cb_rss_item_check_mark);
+                favoriteCheckBox = (CheckBox) itemView.findViewById(R.id.cb_rss_item_favorite_star);
+                expandedContentWrapper = itemView.findViewById(R.id.ll_rss_item_expanded_content_wrapper);
+                expandedContent = (TextView) itemView.findViewById(R.id.tv_rss_item_content_full);
+                visitSite = (TextView) expandedContentWrapper.findViewById(R.id.tv_rss_item_visit_site);
+                visitSite.setOnClickListener(this);
+                archiveCheckBox.setOnCheckedChangeListener(this);
+                favoriteCheckBox.setOnCheckedChangeListener(this);
+            } else {
+                onTablet = true;
+                callout = (TextView) itemView.findViewById(R.id.tv_rss_item_callout);
 
-            archiveCheckBox = (CheckBox) itemView.findViewById(R.id.cb_rss_item_check_mark);
-            favoriteCheckBox = (CheckBox) itemView.findViewById(R.id.cb_rss_item_favorite_star);
-
-            expandedContentWrapper = itemView.findViewById(R.id.ll_rss_item_expanded_content_wrapper);
-            expandedContent = (TextView) expandedContentWrapper.findViewById(R.id.tv_rss_item_content_full);
-            visitSite = (TextView) expandedContentWrapper.findViewById(R.id.tv_rss_item_visit_site);
-
+                if (Build.VERSION.SDK_INT >= 21) {
+                    callout.setOutlineProvider(new ViewOutlineProvider() {
+                        @Override
+                        public void getOutline(View view, Outline outline) {
+                            outline.setOval(0, 0, view.getWidth(), view.getHeight());
+                        }
+                    });
+                    callout.setClipToOutline(true);
+                }
+            }
             itemView.setOnClickListener(this);
-            visitSite.setOnClickListener(this);
-            archiveCheckBox.setOnCheckedChangeListener(this);
-            favoriteCheckBox.setOnCheckedChangeListener(this);
         }
 
         void update(RssFeed rssFeed, RssItem rssItem) {
             this.rssItem = rssItem;
-            feed.setText(rssFeed.getTitle());
             title.setText(rssItem.getTitle());
             content.setText(rssItem.getDescription());
+
+            if (onTablet) {
+                callout.setText("" + Character.toUpperCase(rssFeed.getTitle().charAt(0)));
+                Integer color = rssFeedToColor.get(rssFeed.getRowId());
+                if (color == null) {
+                    color = UIUtils.generateRandomColor(itemView.getResources().getColor(android.R.color.white));
+                    rssFeedToColor.put(rssFeed.getRowId(), color);
+                }
+                callout.setBackgroundColor(color);
+                return;
+            }
+            feed.setText(rssFeed.getTitle());
+
             expandedContent.setText(rssItem.getDescription());
 
             if (rssItem.getImageUrl() != null) {

@@ -29,6 +29,7 @@ import com.android.acios.blocly.api.DataSource;
 import com.android.acios.blocly.api.model.RssFeed;
 import com.android.acios.blocly.api.model.RssItem;
 import com.android.acios.blocly.ui.adapter.NavigationDrawerAdapter;
+import com.android.acios.blocly.ui.fragment.RssItemDetailFragment;
 import com.android.acios.blocly.ui.fragment.RssItemListFragment;
 
 import java.util.ArrayList;
@@ -45,6 +46,7 @@ public class ActivityBlocly extends AppCompatActivity implements NavigationDrawe
     private View overFlowButton;
     private List<RssFeed> allFeeds = new ArrayList<>();
     private RssItem expandedItem = null;
+    private boolean onTablet;
 
 
     @Override
@@ -52,10 +54,11 @@ public class ActivityBlocly extends AppCompatActivity implements NavigationDrawe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_blocly);
 
+        onTablet = findViewById(R.id.fl_activity_blocly_right_pane) != null;
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.tb_activity_blocly);
         setSupportActionBar(toolbar);
 
-        Log.v("In onCreate", "bla1");
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         drawerLayout = (DrawerLayout) findViewById(R.id.dl_activity_blocly);
@@ -310,6 +313,13 @@ public class ActivityBlocly extends AppCompatActivity implements NavigationDrawe
     @Override
     public void onItemExpanded(RssItemListFragment rssItemListFragment, RssItem rssItem) {
         expandedItem = rssItem;
+        if (onTablet) {
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.fl_activity_blocly_right_pane, RssItemDetailFragment.detailFragmentForRssItem(rssItem))
+                    .commit();
+
+            return;
+        }
         animateShareItem(expandedItem != null);
     }
 
