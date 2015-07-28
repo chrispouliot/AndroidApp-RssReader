@@ -38,10 +38,10 @@ public class RssItemListFragment extends Fragment implements ItemAdapter.DataSou
         return rssItemListFragment;
     }
 
-    public static interface Delegate {
-        public void onItemExpanded(RssItemListFragment rssItemListFragment, RssItem rssItem);
-        public void onItemContracted(RssItemListFragment rssItemListFragment, RssItem rssItem);
-        public void onItemVisitClicked(RssItemListFragment rssItemListFragment, RssItem rssItem);
+    public interface Delegate {
+         void onItemExpanded(RssItemListFragment rssItemListFragment, RssItem rssItem);
+         void onItemContracted(RssItemListFragment rssItemListFragment, RssItem rssItem);
+         void onItemVisitClicked(RssItemListFragment rssItemListFragment, RssItem rssItem);
     }
 
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -104,12 +104,16 @@ public class RssItemListFragment extends Fragment implements ItemAdapter.DataSou
                         new DataSource.Callback<List<RssItem>>() {
                             @Override
                             public void onSuccess(List<RssItem> rssItems) {
+
                                 if (getActivity() == null) {
                                     return;
                                 }
                                 if (!rssItems.isEmpty()) {
+
                                     currentItems.addAll(0, rssItems);
+
                                     itemAdapter.notifyItemRangeInserted(0, rssItems.size());
+                                    //itemAdapter.notifyDataSetChanged();
                                 }
                                 swipeRefreshLayout.setRefreshing(false);
                             }

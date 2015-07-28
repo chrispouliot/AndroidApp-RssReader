@@ -145,6 +145,13 @@ public class DataSource {
                     newItems.add(itemFromCursor(newItemCursor));
                     newItemCursor.close();
                 }
+
+                callbackThreadHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        callback.onSuccess(newItems);
+                    }
+                });
             }
         });
     }

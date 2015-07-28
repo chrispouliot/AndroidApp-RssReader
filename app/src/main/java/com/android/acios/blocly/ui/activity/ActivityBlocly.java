@@ -105,7 +105,7 @@ public class ActivityBlocly extends AppCompatActivity implements NavigationDrawe
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 super.onDrawerSlide(drawerView, slideOffset);
                 if (overFlowButton == null) {
-                    ArrayList<View> foundViews = new ArrayList<View>();
+                    ArrayList<View> foundViews = new ArrayList<>();
                     getWindow().getDecorView().findViewsWithText(foundViews,
                             getString(R.string.abc_action_menu_overflow_description),
                             View.FIND_VIEWS_WITH_CONTENT_DESCRIPTION);
@@ -144,7 +144,6 @@ public class ActivityBlocly extends AppCompatActivity implements NavigationDrawe
             editor.putBoolean("hasDemod", true);
             editor.commit();
         }
-        Log.v("In onCreate", "bla2");
 
         drawerLayout.setDrawerListener(drawerToggle);
 
@@ -155,7 +154,6 @@ public class ActivityBlocly extends AppCompatActivity implements NavigationDrawe
         navigationRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         navigationRecyclerView.setItemAnimator(new DefaultItemAnimator());
         navigationRecyclerView.setAdapter(navigationDrawerAdapter);
-        Log.v("In onCreate", "bla3");
 
         BloclyApplication.getSharedDataSource().fetchAllFeeds(new DataSource.Callback<List<RssFeed>>() {
             @Override
@@ -254,7 +252,11 @@ public class ActivityBlocly extends AppCompatActivity implements NavigationDrawe
     @Override
     public void didSelectFeed(NavigationDrawerAdapter adapter, RssFeed rssFeed) {
         drawerLayout.closeDrawers();
+        RssItemListFragment fragment = RssItemListFragment.fragmentForRssFeed(rssFeed);
         Toast.makeText(this, "Show RSS items from " + rssFeed.getTitle(), Toast.LENGTH_SHORT).show();
+        getFragmentManager().beginTransaction()
+                .replace(R.id.fl_activity_blocly, fragment)
+                .commit();
     }
 
     private void animateShareItem(final boolean enabled) {

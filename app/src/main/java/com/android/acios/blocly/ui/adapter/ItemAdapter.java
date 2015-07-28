@@ -24,13 +24,16 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
-import org.w3c.dom.Text;
-
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterViewHolder> {
+
+    /*public ItemAdapter(List<RssItem> rssItems) {
+
+    }*/
 
     public interface ItemAdapterDelegate {
          void onItemClicked(ItemAdapter itemAdapter, RssItem rssItem);
