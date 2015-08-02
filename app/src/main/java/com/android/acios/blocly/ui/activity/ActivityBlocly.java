@@ -51,6 +51,7 @@ public class ActivityBlocly extends AppCompatActivity implements NavigationDrawe
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Debug.startMethodTracing("ActivityBlocly");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_blocly);
 
@@ -184,6 +185,12 @@ public class ActivityBlocly extends AppCompatActivity implements NavigationDrawe
     protected void onPostCreate(Bundle savedInstance) {
         super.onPostCreate(savedInstance);
         drawerToggle.syncState();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //Debug.stopMethodTracing();
     }
 
     @Override
